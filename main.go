@@ -19,7 +19,7 @@ const subject = "zxc"
 
 // func init() {
 // 	ctx := context.Background()
-// 	provider, err := oidc.NewProvider(ctx, "http://keycloak:9080/auth/realms/example-realm")1111
+// 	provider, err := oidc.NewProvider(ctx, "http://keycloak:9080/auth/realms/example-realm")11111
 // 	if err != nil {
 // 		log.Fatalf("Failed to get provider: %v", err)
 // 	}
