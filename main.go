@@ -90,7 +90,7 @@ func main() {
 }
 
 func loadOrderAndUpdateUID(orderUID string) (Order, error) {
-	data, err := ioutil.ReadFile("/ord.json") // Убедитесь, что путь к файлу указан верно
+	data, err := ioutil.ReadFile("ord.json") // Убедитесь, что путь к файлу указан верно
 	if err != nil {
 		return Order{}, err
 	}
