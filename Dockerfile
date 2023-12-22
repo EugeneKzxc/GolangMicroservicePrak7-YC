@@ -15,8 +15,6 @@ FROM alpine
 COPY --from=builder /app/pub-server /pub-server
 COPY --from=builder /app/ord.json /ord.json
 
-EXPOSE 80
+EXPOSE 8081
 
 ENTRYPOINT ["/pub-server"]
-
-EXPOSE 80
