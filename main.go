@@ -72,7 +72,7 @@ func loadOrderAndUpdateUID(orderUID string) (Order, error) {
 	}
 
 	order.OrderUID = orderUID      // Обновление OrderUID согласно введённому пользователем значению
-	order.DateCreated = time.Now() // Обновление даты создания заказа
+	order.DateCreated = time.Now() // Обновление даты создания заказаbb
 
 	return order, nil
 }
