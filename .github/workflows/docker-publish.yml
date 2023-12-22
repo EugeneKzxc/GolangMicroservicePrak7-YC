@@ -19,7 +19,7 @@ jobs:
       - name: Build docker image
         run: docker build . --file Dockerfile --tag cr.yandex/${{ secrets.YC_REGISTRY_ID }}/delivery-service:latest
 
-      # Добавление шага тестирования с использованием NATS Streaming
+      # Добавление шага тестирования с использованием NATS Streaming//
       - name: Run tests
         run: |
           docker run --rm -v "${{ github.workspace }}:/app" -w /app --network container:nats-streaming golang:1.21 go test ./...
