@@ -6,6 +6,7 @@ import (
 	"io/ioutil"
 	"log"
 	"net/http"
+	"os"
 	"time"
 
 	"github.com/nats-io/stan.go"
@@ -14,42 +15,6 @@ import (
 const clusterID = "test-cluster"
 const clientID = "producer-client"
 const subject = "zxc"
-
-// var verifier *oidc.IDTokenVerifier
-
-// func init() {
-// 	ctx := context.Background()
-// 	provider, err := oidc.NewProvider(ctx, "http://keycloak:9080/auth/realms/example-realm")111111
-// 	if err != nil {
-// 		log.Fatalf("Failed to get provider: %v", err)
-// 	}
-
-// 	oidcConfig := &oidc.Config{
-// 		ClientID: "my-client", // Замените на ID вашего клиента в Keycloak
-// 	}
-// 	verifier = provider.Verifier(oidcConfig)
-// }
-
-// func authenticate(next http.HandlerFunc) http.HandlerFunc {
-// 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-// 		rawToken := r.Header.Get("Authorization")
-// 		// Проверка наличия токена и его формата
-// 		if rawToken == "" || !strings.HasPrefix(rawToken, "Bearer ") {
-// 			http.Error(w, "Unauthorized", http.StatusUnauthorized)
-// 			return
-// 		}
-//zczczczczcz
-// 		// Извлечение и проверка токена
-// 		token, err := verifier.Verify(r.Context(), strings.TrimPrefix(rawToken, "Bearer "))
-// 		if err != nil {
-// 			http.Error(w, "Unauthorized", http.StatusUnauthorized)
-// 			return
-// 		}
-
-// 		// Верификация прошла успешно, продолжаем обработку запроса
-// 		next.ServeHTTP(w, r.WithContext(context.WithValue(r.Context(), "user", token)))
-// 	})
-// }
 
 func main() {
 	var tmpl = template.Must(template.New("order").Parse(htmlTemplate))
@@ -83,8 +48,13 @@ func main() {
 		log.Println("sended message with id:", order.OrderUID)
 	})
 
-	log.Println("Server started at http://localhost:8081")
-	if err := http.ListenAndServe(":8081", nil); err != nil {
+	port := os.Getenv("PORT")
+	if port == "" {
+		port = "8081" // порт по умолчанию
+	}
+
+	log.Println("Server started at http://localhost:" + port)
+	if err := http.ListenAndServe(":"+port, nil); err != nil {
 		log.Fatal("Error ListenAndServe: ", err)
 	}
 }
