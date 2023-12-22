@@ -5,20 +5,36 @@ on:
     branches: [ main ]
 
 jobs:
-  build-and-push-to-yc: 
+  integration-test:
     runs-on: ubuntu-latest
+    services:
+      nats-streaming:
+        image: nats-streaming:latest
+        container_name: nats_container
+        ports:
+          - "4222:4222"
+        networks:
+          - app-network
     steps:
       - name: Checkout repository
         uses: actions/checkout@v2
 
-      - name: Build docker image
-        run: docker build . --file Dockerfile --tag cr.yandex/${{ secrets.YC_REGISTRY_ID }}/delivery-service:latest
+      - name: Build docker image for testing
+        run: docker build . --file Dockerfile --tag test-image
 
-      # Добавление шага тестирования
-      - name: Run tests
+      - name: Run integration tests with NATS Streaming
         run: |
-          docker run --rm -v "${{ github.workspace }}:/app" -w /app golang:1.21 go test ./...
+          docker run --rm --network host test-image go test ./...
 
+  build-and-push-to-yc: 
+    runs-on: ubuntu-latest
+    needs: integration-test
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Build docker image for deployment
+        run: docker build . --file Dockerfile --tag cr.yandex/${{ secrets.YC_REGISTRY_ID }}/delivery-service:latest
 
       - name: Login to YC Registry
         uses: docker/login-action@v3.0.0 
@@ -31,9 +47,8 @@ jobs:
         run: docker push cr.yandex/${{ secrets.YC_REGISTRY_ID }}/delivery-service:latest 
 
   deploy:
-    name: Deploy
     runs-on: ubuntu-latest
-    needs: build-and-push-to-yc 
+    needs: build-and-push-to-yc
     steps:
       - name: Checkout repository 
         uses: actions/checkout@v2
@@ -46,6 +61,3 @@ jobs:
           folder-id: ${{ secrets.YC_FOLDER_ID }}
           revision-image-url: cr.yandex/${{ secrets.YC_REGISTRY_ID }}/delivery-service:latest 
           revision-service-account-id: ${{ secrets.YC_SA_ID }}
-          # revision-env: | 
-          #   AMQP_URL=${{ secrets.ENV_AMQP_URL }}
-          #   POSTGRES_URL=${{ secrets.ENV_POSTGRES_URL }}

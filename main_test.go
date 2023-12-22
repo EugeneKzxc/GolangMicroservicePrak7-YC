@@ -1,11 +1,11 @@
 package main
 
 import (
-	"net/http"
-	"net/http/httptest"
-	"strings"
 	"testing"
 	"time"
+
+	"github.com/nats-io/stan.go"
+	"github.com/stretchr/testify/assert"
 )
 
 func TestLoadOrderAndUpdateUID(t *testing.T) {
@@ -26,22 +26,9 @@ func TestLoadOrderAndUpdateUID(t *testing.T) {
 	}
 }
 
-func TestIntegration(t *testing.T) {
-	// Инициализация сервера
-	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		// Ваш обработчик
-	}))
-	defer server.Close()
-
-	// Отправка запроса
-	response, err := http.Post(server.URL, "application/x-www-form-urlencoded", strings.NewReader("id=testUID"))
-	if err != nil {
-		t.Fatalf("Failed to send request: %v", err)
-	}
-
-	if response.StatusCode != http.StatusOK {
-		t.Errorf("Expected status OK, got %v", response.Status)
-	}
-
-	// Дополнительные проверки
+func TestPublishToNATS(t *testing.T) {
+	// Установите подключение к NATS Streaming
+	sc, err := stan.Connect(clusterID, clientID, stan.NatsURL("nats://localhost:4222"))
+	defer sc.Close()
+	assert.NoError(t, err)
 }
