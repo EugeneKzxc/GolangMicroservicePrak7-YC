@@ -52,7 +52,7 @@ func main() {
 	if port == "" {
 		port = "8081" // порт по умолчанию
 	}
-
+	////
 	log.Println("Server started at http://localhost:" + port)
 	if err := http.ListenAndServe(":"+port, nil); err != nil {
 		log.Fatal("Error ListenAndServe: ", err)
