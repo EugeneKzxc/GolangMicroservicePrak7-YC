@@ -32,3 +32,5 @@ func TestPublishToNATS(t *testing.T) {
 	defer sc.Close()
 	assert.NoError(t, err)
 }
+
+//
